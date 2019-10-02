@@ -5,7 +5,7 @@ const express = require('express'),
     jwt = require('./src/jwt'),
     bodyParser = require('body-parser'),
     cookieParser = require('cookie-parser'),
-    PORT = process.env.PORT || 1337;
+      PORT = process.env.PORT || 1337;
 
 const handleError = (error, res) => {
     console.error(error);
