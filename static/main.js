@@ -76,7 +76,77 @@ class Profile {
    В данной функции нужно использовать метод `getStocks` класса `ApiConnector`. Сохраните данные, полученные в результате 
    вызова `getStocks`, в переменную*/
 
-function getCourCecurrency() {
+function getCourceCurrency() {
     let course = ApiConnector.getStocks();
     return course;
 }
+
+// Решение второй части задания
+
+function main(){
+    const Ivan = new Profile({
+                    username: 'ivan',
+                    name: { firstName: 'Ivan', lastName: 'Chernyshev' },
+                    password: 'ivanspass',
+                });
+
+    const Roman = new Profile({
+                    username: 'roman',
+                    name: { firstName: 'Roman', lastName: 'Sidorov' },
+                    password: 'rosido',
+                });
+
+                Ivan.createUser({ username: 'ivan', name: { firstName: 'Ivan', lastName: 'Chernyshev' }, password: 'ivanspass' }, (err, data) => {
+                    if (err) {
+                            console.error('Error adding new user');
+                    } else {
+                            console.log(`Added a new user ${Ivan.name}`);
+                    });
+                }
+
+
+                Ivan.performLogin({ username: 'ivan', password: 'ivanspass' }, (err, data) => {
+                    if (err) {
+                            console.error('User authorization error');
+                    } else {
+                            console.log(`The ${Ivan.username} is logged in`);
+                    });
+                }
+            
+
+                Ivan.addMoney({ currency: 'RUB', amount: 100 }, (err, data) => {
+                    if (err) {
+                            console.error('Error during adding money to Ivan');
+                    } else {
+                            console.log(`Added 500000 euros to Ivan`);
+                    });
+                }
+
+                Ivan.convertMoney({ fromCurrency: 'RUB', targetCurrency: 'Netcoins', targetAmount: 500 }, (err, data) => {
+                    // не пойму как применить здесь getCourceCurrency() для получения курсов валют
+                    let result = Ivan.addMoney * getCourceCurrency('Netcoins');
+                    if (err) {
+                            console.error('Currency conversion error');
+                    } else {
+                            console.log(`Converting RUB to ${result} Netcoins`);
+                    });
+                }
+
+                Roman.createUser({username: 'roman', name: { firstName: 'Roman', lastName: 'Sidorov' }, password: 'rosido'}, (err, data) => {
+                    if (err) {
+                            console.error('Error adding new user');
+                    } else {
+                            console.log(`Added a new user ${Roman.name}`);
+                    });
+                }
+
+                Ivan.transferMoney({ to: Roman.username, amount: Ivan.convertMoney }, (err, data) => {
+                    if (err) {
+                            console.error(`Error during transfering money to ${Roman.username}`);
+                    } else {
+                            console.log(`Transfering ${amount} of Netcoins ${to}`);
+                    });
+                }
+              }
+            
+            main();
