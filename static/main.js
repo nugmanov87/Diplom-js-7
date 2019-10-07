@@ -18,7 +18,7 @@ class Profile {
         return ApiConnector.createUser(
             { username: this.username, name: this.name, password: this.password },
             (err, data) => {
-                console.log(`Adding ${this.name}`);
+                console.log(`Adding ${this.username}`);
                 callback(err, data);
             }
         );
@@ -92,91 +92,82 @@ function main() {
         password: 'rosido',
     });
 
-    Ivan.createUser(
-        {
-            username: 'ivan',
-            name: { firstName: 'Ivan', lastName: 'Chernyshev' },
-            password: 'ivanspass',
-        },
-        (err, data) => {
-            if (err) {
-                console.error('Error adding new user');
-            } else {
-                console.log(`Added a new user ${Ivan.name}`);
+    Ivan.createUser((err, data) => {
+        if (err) {
+            console.error('Error adding new user');
+        } else {
+            console.log(`Added a new user ${Ivan.username}`);
 
-                Ivan.performLogin({ username: 'ivan', password: 'ivanspass' }, (err, data) => {
-                    if (err) {
-                        console.error('User authorization error');
-                    } else {
-                        console.log(`The ${Ivan.username} is logged in`);
+            Ivan.performLogin((err, data) => {
+                if (err) {
+                    console.error('User authorization error');
+                } else {
+                    console.log(`The ${Ivan.username} is logged in`);
 
-                        Ivan.addMoney({ currency: 'RUB', amount: 100 }, (err, data) => {
-                            if (err) {
-                                console.error('Error during adding money to Ivan');
-                            } else {
-                                console.log(`Added 500000 euros to Ivan`);
+                    Ivan.addMoney({ currency: 'RUB', amount: 100 }, (err, data) => {
+                        if (err) {
+                            console.error('Error during adding money to Ivan');
+                        } else {
+                            console.log(`Added 500000 euros to Ivan`);
 
-                                Ivan.convertMoney(
-                                    {
-                                        fromCurrency: 'RUB',
-                                        targetCurrency: 'Netcoins',
-                                        targetAmount: 500,
-                                    },
-                                    (err, data) => {
-                                        // не пойму как применить здесь getCourceCurrency() для получения курсов валют
-                                        let result = Ivan.addMoney * getCourceCurrency('Netcoins');
-                                        if (err) {
-                                            console.error('Currency conversion error');
-                                        } else {
-                                            console.log(`Converting RUB to ${result} Netcoins`);
+                            Ivan.convertMoney(
+                                {
+                                    fromCurrency: 'RUB',
+                                    targetCurrency: 'Netcoins',
+                                    targetAmount: 500,
+                                },
+                                (err, data) => {
+                                    // не пойму как применить здесь getCourceCurrency() для получения курсов валют
+                                    let result = Ivan.addMoney * getCourceCurrency('Netcoins');
+                                    if (err) {
+                                        console.error('Currency conversion error');
+                                    } else {
+                                        console.log(`Converting RUB to ${result} Netcoins`);
 
-                                            Roman.createUser(
-                                                {
-                                                    username: 'roman',
-                                                    name: {
-                                                        firstName: 'Roman',
-                                                        lastName: 'Sidorov',
-                                                    },
-                                                    password: 'rosido',
+                                        Roman.createUser(
+                                            {
+                                                username: 'roman',
+                                                name: {
+                                                    firstName: 'Roman',
+                                                    lastName: 'Sidorov',
                                                 },
-                                                (err, data) => {
-                                                    if (err) {
-                                                        console.error('Error adding new user');
-                                                    } else {
-                                                        console.log(
-                                                            `Added a new user ${Roman.name}`
-                                                        );
+                                                password: 'rosido',
+                                            },
+                                            (err, data) => {
+                                                if (err) {
+                                                    console.error('Error adding new user');
+                                                } else {
+                                                    console.log(`Added a new user ${Roman.name}`);
 
-                                                        Ivan.transferMoney(
-                                                            {
-                                                                to: Roman.username,
-                                                                amount: Ivan.convertMoney,
-                                                            },
-                                                            (err, data) => {
-                                                                if (err) {
-                                                                    console.error(
-                                                                        `Error during transfering money to ${Roman.username}`
-                                                                    );
-                                                                } else {
-                                                                    console.log(
-                                                                        `Transfering ${amount} of Netcoins ${to}`
-                                                                    );
-                                                                }
+                                                    Ivan.transferMoney(
+                                                        {
+                                                            to: Roman.username,
+                                                            amount: Ivan.convertMoney,
+                                                        },
+                                                        (err, data) => {
+                                                            if (err) {
+                                                                console.error(
+                                                                    `Error during transfering money to ${Roman.username}`
+                                                                );
+                                                            } else {
+                                                                console.log(
+                                                                    `Transfering ${amount} of Netcoins ${to}`
+                                                                );
                                                             }
-                                                        );
-                                                    }
+                                                        }
+                                                    );
                                                 }
-                                            );
-                                        }
+                                            }
+                                        );
                                     }
-                                );
-                            }
-                        });
-                    }
-                });
-            }
+                                }
+                            );
+                        }
+                    });
+                }
+            });
         }
-    );
+    });
 }
 
 main();
