@@ -24,7 +24,7 @@ class Profile {
         );
     }
 
-    // 4. Реализуйте метод _Авторизация_ — метод вызывается с данными, полученными из конструктора класса.
+    // 4. Реализуйте метод _Авторизация_ — метод вызывается с данными, полученными из конструктора класса.
     performLogin(callback) {
         return ApiConnector.performLogin(
             { username: this.username, name: this.name, password: this.password },
@@ -72,10 +72,12 @@ class Profile {
    В данной функции нужно использовать метод `getStocks` класса `ApiConnector`. Сохраните данные, полученные в результате 
    вызова `getStocks`, в переменную*/
 
-function getCourceCurrency() {
-    let course = ApiConnector.getStocks();
-    return course;
-}
+const getCourceCurrency = callback => {
+    return ApiConnector.getStocks((err, data) => {
+        console.log('The exchange rate is requested from the server');
+        callback(err, data);
+    });
+};
 
 // Решение второй части задания
 
@@ -103,65 +105,64 @@ function main() {
                     console.error('User authorization error');
                 } else {
                     console.log(`The ${Ivan.username} is logged in`);
-
-                    Ivan.addMoney({ currency: 'RUB', amount: 100 }, (err, data) => {
+                    const userMoney = { currency: 'RUB', amount: 900000 };
+                    Ivan.addMoney(userMoney, (err, data) => {
                         if (err) {
                             console.error('Error during adding money to Ivan');
                         } else {
-                            console.log(`Added 500000 euros to Ivan`);
+                            console.log(
+                                `User ${Ivan.username} made on account of ${userMoney.amount} ${userMoney.currency}.`
+                            );
+                            rateOfCurrency((err, data) => {
+                                if (err) {
+                                    console.error('An error occurred while collecting data.');
+                                } else {
+                                    let resultOfRateOfCurrency = data[93].RUB_NETCOIN;
+                                    const convertingMoney = {
+                                        fromCurrency: userMoney.currency,
+                                        targetCurrency: 'NETCOIN',
+                                        targetAmount: 0,
+                                    };
+                                    convertingMoney.targetAmount =
+                                        resultOfRateOfCurrency * userMoney.amount;
 
-                            Ivan.convertMoney(
-                                {
-                                    fromCurrency: 'RUB',
-                                    targetCurrency: 'Netcoins',
-                                    targetAmount: 500,
-                                },
-                                (err, data) => {
-                                    // не пойму как применить здесь getCourceCurrency() для получения курсов валют
-                                    let result = Ivan.addMoney * getCourceCurrency('Netcoins');
-                                    if (err) {
-                                        console.error('Currency conversion error');
-                                    } else {
-                                        console.log(`Converting RUB to ${result} Netcoins`);
+                                    Ivan.convertMoney(convertingMoney, (err, data) => {
+                                        if (err) {
+                                            console.error('Currency conversion error');
+                                        } else {
+                                            console.log(
+                                                `Conversion made ${userMoney.amount} ${convertingMoney.fromCurrency} in ${convertingMoney.targetAmount} ${convertingMoney.targetCurrency}.`
+                                            );
 
-                                        Roman.createUser(
-                                            {
-                                                username: 'roman',
-                                                name: {
-                                                    firstName: 'Roman',
-                                                    lastName: 'Sidorov',
-                                                },
-                                                password: 'rosido',
-                                            },
-                                            (err, data) => {
+                                            Roman.createUser((err, data) => {
                                                 if (err) {
                                                     console.error('Error adding new user');
                                                 } else {
-                                                    console.log(`Added a new user ${Roman.name}`);
-
-                                                    Ivan.transferMoney(
-                                                        {
-                                                            to: Roman.username,
-                                                            amount: Ivan.convertMoney,
-                                                        },
-                                                        (err, data) => {
-                                                            if (err) {
-                                                                console.error(
-                                                                    `Error during transfering money to ${Roman.username}`
-                                                                );
-                                                            } else {
-                                                                console.log(
-                                                                    `Transfering ${amount} of Netcoins ${to}`
-                                                                );
-                                                            }
-                                                        }
+                                                    console.log(
+                                                        `Added a new user ${Roman.username}`
                                                     );
+                                                    const targetUser = {
+                                                        to: 'Roman',
+                                                        amount: convertingMoney.targetAmount,
+                                                    };
+
+                                                    Ivan.transferMoney(targetUser, (err, data) => {
+                                                        if (err) {
+                                                            console.error(
+                                                                `Error during transfering money to ${Roman.username}`
+                                                            );
+                                                        } else {
+                                                            console.log(
+                                                                `The transfer ${targetUser.amount} user ${targetUser.to}.`
+                                                            );
+                                                        }
+                                                    });
                                                 }
-                                            }
-                                        );
-                                    }
+                                            });
+                                        }
+                                    });
                                 }
-                            );
+                            });
                         }
                     });
                 }
@@ -169,5 +170,4 @@ function main() {
         }
     });
 }
-
 main();
