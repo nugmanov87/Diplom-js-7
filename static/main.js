@@ -38,7 +38,7 @@ class Profile {
 
     addMoney({ currency, amount }, callback) {
         return ApiConnector.addMoney({ currency, amount }, (err, data) => {
-            console.log(`Adding ${amount} of ${currency} to ${this.username}`);
+            console.log(`User ${this.username} plans to Deposit ${amount} ${currency}.`);
             callback(err, data);
         });
     }
@@ -50,7 +50,7 @@ class Profile {
             { fromCurrency, targetCurrency, targetAmount },
             (err, data) => {
                 console.log(
-                    `Сonvertible of ${fromCurrency} to ${targetCurrency} just ${targetAmount}`
+                    `It is planned to convert to ${targetAmount} ${targetCurrency} of ${fromCurrency}.`
                 );
                 callback(err, data);
             }
@@ -113,18 +113,18 @@ function main() {
                             console.log(
                                 `User ${Ivan.username} made on account of ${userMoney.amount} ${userMoney.currency}.`
                             );
-                            rateOfCurrency((err, data) => {
+                            getCourceCurrency((err, data) => {
                                 if (err) {
                                     console.error('An error occurred while collecting data.');
                                 } else {
-                                    let resultOfRateOfCurrency = data[93].RUB_NETCOIN;
+                                    let resultOfGetCourceCurrency = data[93].RUB_NETCOIN;
                                     const convertingMoney = {
                                         fromCurrency: userMoney.currency,
                                         targetCurrency: 'NETCOIN',
                                         targetAmount: 0,
                                     };
                                     convertingMoney.targetAmount =
-                                        resultOfRateOfCurrency * userMoney.amount;
+                                        resultOfGetCourceCurrency * userMoney.amount;
 
                                     Ivan.convertMoney(convertingMoney, (err, data) => {
                                         if (err) {
