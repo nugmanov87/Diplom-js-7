@@ -142,7 +142,7 @@ function main() {
                                                         `Added a new user ${Roman.username}`
                                                     );
                                                     const targetUser = {
-                                                        to: 'Roman',
+                                                        to: 'roman',
                                                         amount: convertingMoney.targetAmount,
                                                     };
 
